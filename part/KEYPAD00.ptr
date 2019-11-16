@@ -1,0 +1,12 @@
+#resourcefile=WTIIST00
+#label=KEYPAD00
+#comment=""
+#control=KEYPAD
+#view=$(BuiltinView)\keypadvga.ima
+#property={
+( Dummy_X_PID 0 dummy )
+( Dummy_Y_PID 308 dummy )
+( PAD_ID_PID NINSHIKI_PAD_ID short )
+( TYPE_PID NINSHIKI_PAD_ID+QWERTY_PAD_ID+SHARP_PAD_ID+TIME_PAD_ID+SYMBOL_PAD_ID+CODE_PAD_ID+USER_PAD_ID+HIRA_PAD_ID+DEFWORD_PAD_ID+CLIP_PAD_ID+OPTION_SMALL_PAD_ID short )
+( PAD_MODE_PID HIRA_STATE char )
+}

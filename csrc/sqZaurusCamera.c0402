@@ -1,0 +1,572 @@
+/*
+  Digital camera support code for Squeak/Zaurus
+  Written by OHSHIMA Yoshiki (ohshima@is.titech.ac.jp)
+  Revised: 2000/ 3/30
+*/
+
+/*
+  VM内の状態として、offscreenとそのサイズ、
+  および"activate"されているかどうかという状態を持つ。
+  inactive時 == (offscreen == NULL)
+  
+			active時			inactive時
+  サイズ変更　　　　	offscreen破棄			とくになし
+  			offscreen割り当て
+			SetConfigCamera()		
+　明るさ		SetConfigCamera()		とくになし
+　モード		SetConfigCamera()		とくになし
+　ズーム		SetConfigCaemra()		とくになし
+  activate		release(?)			activate
+  			dispose offscreen
+			allocate offscreen
+			activate
+
+			
+  */
+
+#include "sq.h"
+#include <cameralb.h>
+#include <offscrn.h>
+
+#define HEADMARGIN 16
+
+#define CAMERA_ABSENT -1
+#define CAMERA_AG05 0
+#define CAMERA_AG06 1
+#define CAMERA_OTHER 2
+
+#define bytesPerLine(width, depth)	((((width)*(depth) + 31) >> 5) << 2)
+#define bytesPerLineRD(width, depth)	((((width)*(depth)) >> 5) << 2)
+
+char *printf(char *fmt, ...);
+
+CAMERA *cameras[] = {NULL, NULL};
+WINDOWHD offScreen = 0;
+int cameraWidth;
+int cameraHeight;
+int lastLightValue;
+int directToLCDFlag;
+int directLeft;
+int directTop;
+int directWidth;
+int directHeight;
+
+static int
+cameraIsActive()
+{
+  return offScreen != 0;
+}
+
+static int
+getCameraModel(int slot)
+{
+  static CAMERANAME cname;
+  
+  switch (slot) {
+  case 1:
+    GetCameraInfo(CAMERA_SOCKET16, &cname) == SUCCESS;
+    break;
+  case 2:
+    GetCameraInfo(CAMERA_SOCKET0, &cname) == SUCCESS;
+    break;
+  default:
+    cname[0] = 0;
+  }
+
+  ... return -1, 0, 1, 2 according to cname;
+}
+  
+
+static CAMERA*
+getCameraStruct(int slot)
+{
+  if (slot < 1 || 2 < slot) {
+    printf("range of slot argument\n");
+    return NULL;
+  }
+
+  return cameras[slot-1]; /* may be NULL */
+}
+
+
+static int
+allocateOffScreenIfNeeded(RECTANGLE *size)
+{
+  OFFSCRNINFO info;
+
+  if (offScreen != 0) {
+    if (GetOffscreenInfo(offScreen, &info) == false) {
+      printf("get offscreen info\n");
+      return false;
+    }
+
+    if (info.rect.width != size->width ||
+	info.rect.height != size->height) {
+      DisposeOffscreen(offScreen);
+      offScreen = 0;
+    }
+  }
+
+  if (offScreen == 0) {
+    if ((offScreen = NewOffscreen(&size, 16, 2)) == 0) {
+      printf("allocation of off screen\n");
+      return false;
+    }
+  }
+  return true;
+}
+  
+/* who is responsible for BaseHeader? */
+static int
+offScreenToBits(WINDOWHD offScreen,
+		int *bits, int bitsWidth, int bitsHeight, int clipX,
+		int clipY, int clipWidth, int clipHeight,
+		int offsetX, int offsetY)
+{
+  OFFSCRNINFO info;
+  int scanLine16;
+  int firstWord16;
+  int lastWord16;
+  unsigned short *srcPixMap;
+  unsigned short *to;
+  unsigned short pixel;
+
+  int i;
+  int j;
+  
+  if (GetOffscreenInfo(offScreen, &info) == false) {
+    printf("get offscreen info\n");
+    success(false);
+    return false;
+  }
+
+  if (clipY < 0 || clipX < 0 ||
+      clipWidth > info.rect.width ||
+      clipHeight > info.rect.height) {
+    success(false);
+    return false;
+  }
+
+  if (offsetY < 0 || offsetX < 0 ||
+      offsetX + clipWidth > bitsWidth ||
+      offsetY + clipHeight > bitsHeight) {
+    success(false);
+    return false;
+  }      
+
+  srcPixMap = (unsigned short *)GetPixMapAdrOffscreen(offScreen);
+  to = (unsigned short *)bits;
+
+  srcScanLine16 = bytesPerLine(info.rect.width, 16);
+  firstWord16 = srcScanLine16 * clipY + bytesPerLineRD(clipX, 16);
+  lastWord16 = srcScanLine16 * clipY + bytesPerLine(clipX, 16);
+
+  dstScanLine16 = bytesPerLine(bitsWidth, 16);
+  for (line = clipY; line < clipY + clipHeight; line++) {
+    to = bits + dstScanLine16 * offsetY + bytesPerLineRD(offsetX, 16);
+    from = srcPixMap
+      for (; from 
+    pixel = 
+
+      srcPixMap[i+1];
+    to[i] = (((pixel>>1)&0x7FE0) |
+	     ((pixel&0x1f)));
+    pixel = srcPixMap[i];
+    to[i+1] = (((pixel>>1)&0x7FE0) |
+	       ((pixel&0x1f)));
+  }
+  return true;
+}
+
+int
+sqZaurusCameraInitialize(int slot)
+{
+  OFFSCRNINFO info;
+  CAMERA *camera;
+  int APIzoom;
+
+  if (cameras[slot-1] != NULL) {
+    if (CloseCamera(cameras[slot-1]) != SUCCESS) {
+      printf("CloseCamera\n");
+    }
+    cameras[slot-1] = NULL;
+  }
+  
+  switch (slot) {
+  case 1:
+    camera = OpenCamera(CAMERA_SOCKET16);
+    if (camera == NULL) {
+      printf("opening camera\n");
+      success(false);
+      return false;
+    }
+    cameras[slot-1] = camera;
+    break;
+  case 2:
+    camera = OpenCamera(CAMERA_SOCKET0);
+    if (camera == NULL) {
+      printf("opening camera\n");
+      success(false);
+      return false;
+    }
+    cameras[slot-1] = camera;
+    break;
+  default:
+    success(false);
+    return false;
+  }
+
+  return true;
+}
+
+int
+sqZaurusCameraRelease(int slot)
+{
+  CAMERA *camera;
+  
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    return false;
+  }
+  
+  if (CloseCamera(camera) != SUCCESS) {
+    ;
+  }
+  cameras[slot-1] = NULL;
+  cameraWidth = 0;
+  cameraHeight = 0;
+  
+  return true;
+}
+
+int
+sqZaurusCameraActivate(int slot, int width, int height)
+{
+  OFFSCRNINFO info;
+  RECTANGLE size;
+  CAMERA *camera;
+  int zoom;
+
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+  
+  zoom = 1;
+  size.left = 0;
+  size.top = 0;
+  size.width = width;
+  size.height = height;
+  if (SetConfigCamera(camera,
+		      CAMCON_SIZE|CAMCON_IS_AVAILABLE,
+		      &size, (ULONG)zoom) != SUCCESS) {
+    printf("camera: size\n");
+    success(false);
+    return false;
+  }
+
+  SetConfigCamera(camera, CAMCON_ZOOM, (ULONG)APIzoom);
+  lastLightValue = 0;
+  SetConfigCamera(camera, CAMCON_LIGHT_RESET);
+
+  if (allocateOffScreenIfNeeded(&size) == false) {
+    success(false);
+    return false;
+  }
+  
+  if (ActivateCamera(camera) != SUCCESS) {
+    printf("activation of the camera\n");
+    DisposeOffscreen(offScreen);
+    offScreen = 0;
+    success(false);
+    return false;
+  }
+
+  cameraWidth = width;
+  cameraHeight = height;
+
+  return true;
+}
+
+int
+sqZaurusCameraDeactivate(int slot)
+{
+  CAMERA *camera;
+  
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    return false;
+  }
+  
+  if (DeactivateCamera(camera) != SUCCESS) {
+    ;
+  }
+  return true;
+}
+
+int
+sqZaurusCameraSetSizeAndZoom(int slot, int width,
+			     int height, int zoom)
+{
+  CAMERA *camera;
+  RECTANGLE size;
+
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+
+  size.left = 0;
+  size.top = 0;
+  size.width = width;
+  size.height = height;
+  if (SetConfigCamera(camera, CAMCON_SIZE,
+		      &size, (ULONG)zoom) != SUCCESS) {
+    return false;
+  }
+  return true;
+}
+
+int
+sqZaurusCameraSetLight(int slot, int light)
+{
+  CAMERA *camera;
+  CAMCONFTYPE type;
+  
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+
+  if (light == 0) {
+    type = CAMCON_LIGHT_RESET;
+  } else if (light > lastLightValue) {
+    type = CAMCON_LIGHT_INC;
+  } else (light < lastLightValue) {
+    type = CAMCON_LIGHT_DEC;
+  }
+    
+  if (SetConfigCamera(camera, type) != SUCCESS) {
+    return false;
+  }
+  lastLightValue = light;
+  return true;
+}
+
+int
+sqZaurusCameraSetDirectToLCD(int slot, int direct, 
+			     int left, int top, int widht, int height)
+{
+  CAMERA *camera;
+  RECTANGLE size;
+  
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+
+  if (direct) {
+    directLeft = left;
+    directTop = top;
+    directWidth = width;
+    directHeight = height;
+    directToLCDFlag = direct;
+  } else {
+    directToLCDFlag = direct;
+  }
+
+  return true;
+}
+
+int
+sqZaurusCameraSetMode(int slot, int mode)
+{
+  CAMERA *camera;
+  
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+  
+  if (SetConfigCamera(camera, CAMCON_CONDITION,
+			mode) != SUCCESS) {
+    return false;
+  }
+  return true;
+}
+    
+int
+sqZaurusCameraSetPlace(int slot, int place)
+{
+  CAMERA *camera;
+  
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+  
+  if (SetConfigCamera(camera, CAMCON_CONDITION,
+			place) != SUCCESS) {
+    return false;
+  }
+  return true;
+}
+
+int
+sqZaurusCameraAvailable(int slot)
+{
+  return getCameraModel(slot) != -1;
+}
+
+
+int
+sqZaurusCameraShutterButtonPressed(int slot)
+{
+  CAMERA *camera;
+  
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+  
+  return IsPressedTrigCamera(camera);
+}
+
+int
+sqZaurusCameraInFocus(int slot)
+{
+  CAMERA *camera;
+
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+
+  return IsFocusedCamera(camera);
+}
+
+
+int
+sqZaurusCameraWaitShutter(int slot, int bits,
+			  int bitsWidth, int bitsHeight, 
+			  int clipX, int clipY,
+			  int clipWidth, int clipHeight,
+			  int offsetX, int offsetY,
+			  int timeout)
+{
+  CAMERA *camera;
+  int model;
+  RECTANGLE size;
+  int start;
+  int shutter = false;
+  int needDispCameraPhoto = false;
+
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+
+  model = getCameraModel(slot);
+
+  if (directToLCDFlag) {
+    switch (model) {
+    case CAMERA_AG05:
+      size.left = directLeft;
+      size.top = directTop;
+      size.width = directWidth;
+      size.height = directHeight;
+      
+      if (SetConfigCamera(camera, CAMCON_DMAMODE, CAMCON_DMA_START, &size, 1) != SUCCESS) {
+	success(false);
+	return false;
+      }
+      break;
+    case CAMERA_AG06:
+      needDispCameraPhoto = true;
+      break;
+    case CAMERA_OTHER:
+    default:
+      success(false);
+      break;
+    }
+  }
+    
+  start = ioMSecs();
+  while (more) {
+    if (IsPressedTrigCamera(camera)) {
+      shutter = true;
+      more = false;
+    }
+    if (!shutter) {
+      now = ioMSecs();
+      if (now < start) { /* wrap up */
+	more = false;
+      } else if (now - start > timeout) {
+	more = false;
+      }
+    }
+    if (needDispCameraPhoto) {
+      DispCameraPhoto(camera, 1);
+    }
+  }
+
+  if (shutter) {
+    StartCaptureCamera(camera);
+  
+    size.left = 0;
+    size.top = 0;
+    size.width = cameraWidth;
+    size.height = cameraHeight;
+    if (GetCameraPhoto(camera, offScreen, &size, 1) != SUCCESS) {
+      printf("GetCameraPhoto 1\n");
+      success(false);
+      return false;
+    }
+    
+    if (offScreenToBits(bits, offScreen, width, height) == false) {
+      printf("offScreenToBits\n");
+      success(false);
+      return false;
+    }
+  }
+    
+  if (directToLCD && (model == CAMERA_AG05)) {
+    if (SetConfigCamera(camera, CAMCON_DMAMODE, CAMCON_DMA_STOP) != SUCCESS) {
+      printf("stop direct mode\n");
+      success(false);
+      return false;
+    }
+  }
+
+  return true;
+}
+    
+int
+ioCameraPeekPicture(int slot, int *bits, int width, int height)
+{
+  CAMERA *camera;
+  RECTANGLE size;
+
+  if ((camera = getCameraStruct(slot)) == NULL) {
+    success(false);
+    return false;
+  }
+
+  StartCaptureCamera(camera);
+  
+  size.left = 0;
+  size.top = 0;
+  size.width = cameraWidth;
+  size.height = cameraHeight;
+  if (GetCameraPhoto(camera, offScreen, &size, 1) != SUCCESS) {
+    printf("GetCameraPhoto 1\n");
+    success(false);
+    return false;
+  }
+
+  if (offScreenToBits(bits, offScreen, width, height) == false) {
+    printf("offScreenToBits\n");
+    success(false);
+    return false;
+  }
+
+  return true;
+}

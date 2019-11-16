@@ -1,0 +1,37 @@
+Fri Jan 14 19:17:40 2000
+;
+Sun Apr  9  5:06:48 2000
+;
+wtii.bld
+;
+F0List.frm,0
+Squeak.frm,1
+;
+;
+F0List.c
+Squeak.c
+interp.c
+sqADPCMPrims.c
+sqFilePrims.c
+sqMiscPrims.c
+sqOldSoundPrims.c
+sqShapeFill.c
+sqSoundPrims.c
+sqVirtualMachine.c
+sqZaurusCamera.c
+sqZaurusDirectory.c
+sqZaurusExternalPrims.c
+sqZaurusMisc.c
+sqZaurusNetwork.c
+sqZaurusSerialAndMIDIPort.c
+sqZaurusSoundAndJoystick.c
+sqZaurusWindow.c
+wtiimain.c
+sqZaurusOldCamera.c
+;
+aplhead.s
+prochead.s
+;
+;
+wtii_C_usr.h
+sq.h

@@ -1,0 +1,34 @@
+***** プロジェクトのローカル用設定ファイル *****
+
+[Project]
+ApplicationType=CType0
+ApplicationID=WTII
+DisplaySize=VGA
+
+Home=C:\ohshima\zau-chu\ICRUISE\2000.2
+ADLSource=C:\ohshima\zau-chu\ICRUISE\2000.2\adlsrc
+ASMSource=C:\ohshima\zau-chu\ICRUISE\2000.2\asmsrc
+Build=C:\ohshima\zau-chu\ICRUISE\2000.2\build
+CSource=C:\ohshima\zau-chu\ICRUISE\2000.2\csrc
+Form=C:\ohshima\zau-chu\ICRUISE\2000.2\form
+Image=C:\ohshima\zau-chu\ICRUISE\2000.2\image
+Menu=C:\ohshima\zau-chu\ICRUISE\2000.2\menu
+Part=C:\ohshima\zau-chu\ICRUISE\2000.2\part
+Project=C:\ohshima\zau-chu\ICRUISE\2000.2\project
+String=C:\ohshima\zau-chu\ICRUISE\2000.2\string\WTIIDM00
+View=C:\ohshima\zau-chu\ICRUISE\2000.2\view
+
+Editor=
+ImageEditor=
+
+[ADL Tools]
+
+[COPTIONS]
+DGFLAGS=
+DEFS=-DVGA_140DPI_APL
+COPTFLAGS=-O -OA -OL
+CFLAGS=-ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL
+
+[LOPTIONS]
+LKFLAGS=-L$(LIBDIR) -Y UL,$(LIBDIR)
+LKFLAGS2=-lzeuc -lppp -letc -lzaurus -lansi

@@ -1,0 +1,41 @@
+#resourcefile=WTIIST00
+#label=BlueButton
+#comment=""
+#control=CHECKBUTTON
+#view=""
+#property={
+( BUTTON_NUM_PID 1 short )
+( TYPE_PID 0 char )
+( VALUE_PID CHECK_OFF short )
+( CHECKBTNSTR "" subview )
+( BUTTON_MODE_PID(1) ICON_BUTTON+NO_REVERSE_RETURN+FROM_START short )
+( CHECKBTNONICON SPECIFIED subview )
+#subview={
+#control=CHECKBUTTONONICON
+#view=$(BuiltinView)\chbtnb.icn
+#property={
+( LEFT_X_PID 0 dummy )
+( TOP_Y_PID 0 dummy )
+( CHECK_ON_ICON_RES_ID_PID CheckBtnOn id )
+( CHECK_ON_ICON_RES_NAME_PID SYSTIC00 resfile )
+}
+}
+( CHECKBTNOFFICON SPECIFIED subview )
+#subview={
+#control=CHECKBUTTONOFFICON
+#view=$(BuiltinView)\chbtna.icn
+#property={
+( LEFT_X_PID 540 qpshort )
+( TOP_Y_PID 4 qpshort )
+( WIDTH_PID 9 qpsizeshort )
+( HEIGHT_PID 9 qpsizeshort )
+( BUTTON_MODE_PID(1) ICON_BUTTON+NO_REVERSE_RETURN+FROM_START short )
+( BTN_FG_COLOR_PID(1) GC_BLACK guicolor )
+( BTN_BG_COLOR_PID(1) GC_BTN_BG guicolor )
+( CHECK_OFF_ICON_RES_ID_PID CheckBtnOff id )
+( CHECK_OFF_ICON_RES_NAME_PID SYSTIC00 resfile )
+( ICON_RES_ID_PID(1) CheckBtnOff id )
+( ICON_RES_NAME_PID(1) SYSTIC00 resfile )
+}
+}
+}

@@ -1,0 +1,4 @@
+remote smonserv COM1 38400
+memload wtii.dli
+load
+br PIMMain

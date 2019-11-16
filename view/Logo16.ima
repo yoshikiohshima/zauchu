@@ -1,0 +1,8 @@
+#RESFILENAME="WTIIIM00"
+#LABEL="Logo16"
+#COMMENT=""
+#OPTION="4"
+#NORMAL={
+#FILE="Logo161.ppm"}
+#REVERSE={
+#FILE="Logo162.ppm"}

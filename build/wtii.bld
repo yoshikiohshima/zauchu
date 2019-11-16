@@ -1,0 +1,290 @@
+#	Squeak
+# コントロール定義ファイルの指定
+CtrDef = CrimsonVGA.ctl
+
+#------------------------------------------------------------------#
+
+# リソース生成方法の指定
+%ResourceBegin
+
+## アセンブラファイル中のラベルの定数宣言を書き出すヘッダファイル名
+HeaderFile = $(CSource)\wtii_res.h
+AdlHeaderFile = $(ADLSource)\wtii_adl.h
+
+## イベント／コールバック関数のソースファイル名
+EventFunction = $(CSource)\wtii_evc.c
+AdlEventFunction = $(ADLSource)\wtii_eva.adl
+
+## 部品リソース関連
+# リソースファイル(ブロック名)
+PartResourceBlk = WTIIST00
+# 出力先アセンブラファイル名
+PartResourceOut = $(ASMSource)\ctl_wtii.s
+# リソースジェネレータの指定
+PartCommand = part2res @PartResourceOut @HeaderFile @PartFile  -e $(Project)\wtii.prf
+
+## フォームリソース関連
+# リソースファイル(ブロック名)
+FormResourceBlock = WTIIFM00
+# 出力先アセンブラファイル名
+FormResourceOut = $(ASMSource)\frm_wtii.s
+# リソースジェネレータの指定
+FormCommand = \
+  form2res @FormResourceOut @EventFunction @AdlEventFunction @HeaderFile @FormFile @AdlHeaderFile -e $(Project)\wtii.prf
+
+## 文字列リソース関連
+# リソースファイル(ブロック名)
+StringResourceBlk = WTIIDM00
+# 出力先アセンブラファイル名
+StringResourceOut = $(ASMSource)\str_wtii.s
+# リソースジェネレータの指定
+StringCommand = str2res @StringResourceOut  @HeaderFile  @StringFile  -e $(Project)\wtii.prf
+
+
+## IMAGEタイプビューリソース関連
+# リソースファイル(ブロック名)
+ImageResourceBlk = WTIIIM00
+# 出力先アセンブラファイル名
+ImageResourceOut = $(ASMSource)\img_wtii.s
+# リソースジェネレータの指定
+ImageCommand = view2res @ImageResourceOut $(Image) @HeaderFile @ImageFile -e $(Project)\wtii.prf
+
+## ICONタイプビューリソース関連
+# リソースファイル(ブロック名)
+IconResourceBlock = WTIIIC00
+# 出力先アセンブラファイル名
+IconResourceOut = $(ASMSource)\icn_wtii.s
+# リソースジェネレータの指定
+IconCommand = view2res @IconResourceOut $(Image) @HeaderFile @IconFile -e $(Project)\wtii.prf
+
+## メニュー文字列リソース関連
+# リソースファイル(ブロック名)
+MenuResourceBlock = WTIIMN00
+# 出力先アセンブラファイル名
+MenuResourceOut = $(ASMSource)\mnu_wtii.s
+# リソースジェネレータの指定
+MenuCommand = menu2res @MenuResourceOut @HeaderFile @MenuFile  -e $(Project)\wtii.prf
+
+## アトリビュートリソース関連
+# リソースファイル(ブロック名)
+AttributeResourceBlock = WTIIMN00
+# 出力先アセンブラファイル名
+AttributeResourceOut = $(ASMSource)\mnu_wtii.s
+# リソースジェネレータの指定
+AttrCommand = attr2res @AttributeResourceOut @HeaderFile @AttributeFile -e $(Project)\wtii.prf
+
+%ResourceEnd
+
+#------------------------------------------------------------------#
+
+# ユーザー定義マクロ等の指定開始
+# この部分はADl-makefileの先頭にこのまま書き出される
+### ユーザが任意にADL-Makefileで用いるマクロを定義する
+%UserBegin
+
+#SZABをインストールしたディレクトリを書いてください
+#ZABDIR = c:\zab
+
+#multiをインストールしたディレクトリを書いてください
+MULTIDIR = c:\green
+
+#LIBDIR = $(ZABDIR)\lib
+LIBDIR = $(Program)\..\lib
+
+LIBINC = $(CHeader)
+ANSIINC = $(MULTIDIR)\ansi
+
+#　インクルードパス
+CINCFLAGS = -I$(CSource)\ -I$(ANSIINC)\ -I$(LIBINC)\
+
+#DEFS =
+#DGFLAGS = -G
+
+#　オプティマイズオプション
+#　-O　：ノーマルな最適化
+#COPTFLAGS = -O
+
+#　Ｃコンパイラオプション
+#　-ansi		：ゆるやかなANSI準拠
+#　-Xnooldfashioned	：=-などの古い形式を認めない
+#　-X236		：文字列などを.textセクションに配置
+#　-X700		：.bssセクションのリネームを許可
+#　-noasmwarn		：asm文に対する警告抑制
+#　-cpu=sh_iii		：SH3のコード生成
+#　-littleendian	：リトルエンディアン
+#CFLAGS = 	$(DGFLAGS) $(DEFS) $(CINCFLAGS) $(COPTFLAGS) \
+#		-ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn \
+#		-cpu=sh_iii -littleendian -Xnosysreg
+
+#アセンブラオプション
+ASFLAGS = $(ADFLAGS) -b0 -sh_iii -cm -cd -sjin -sjout
+
+ASMINC	= -I"$(CHeader)\|$(Home)\|$(CSource)\|$(ASMSource)\ "
+
+#プロセスが使用するグローバル変数
+LIBS = $(LIBDIR)\sysglob.obj
+
+#　リンカオプション
+#LKFLAGS = -L$(LIBDIR) -Y UL,$(LIBDIR) -map=wtii.map \
+#		@wtii.lnk @$(CSource)\linkfile.lst
+LKFLAGS =  -map=wtii.map \
+		@wtii.lnk @$(CSource)\linkfile.lst
+
+#リンカライブラリオプション
+#LKFLAGS2 = -letc -lzaurus -lansi -o wtii
+LKFLAGS2 = -o wtii
+
+#　h2equオプション
+H2EQUFLAGS = $(DEFS) $(CINCFLAGS)
+
+CC = $(MULTIDIR)\ccsh
+AS = $(MULTIDIR)\assh
+LK = $(MULTIDIR)\lx
+LB = $(MULTIDIR)\ax
+
+
+# 文字列ビューファイルがeucなどの場合に必要. 
+# ASMSW = -sjout
+
+
+### ADLのオプション定義
+ADLINC = 	-I$(Home) \
+		-I$(ADLSource) \
+		-I$(ADLControl) \
+		-I$(ADLHeader) \
+		-I$(CSource) 
+.IGNORE:
+%UserEnd
+
+#------------------------------------------------------------------#
+
+# ADLソースのコンパイル方法の指定
+%AdlcBegin
+
+## ADLコンパイラコマンドの指定
+AdlcCommand = \
+	adlproto  -global=global_adl $(ADLINC) &AdlSource ; \
+	adlc  -c -DADL =atosys $(ADLINC) @AdlSource ;
+## 依存関係の指定
+AdlcDepend = @AdlSource  @HeaderFile
+## ADLオブジェクトファイル名の指定
+#AdlcTarget = @AdlSource['dirname'%.adl=$(Home)\%.z]
+#オブジェクトファイルはソースファイルと同じディレクトリに出力する．
+AdlcTarget = @AdlSource[%.adl=%.z]
+
+%AdlcEnd
+
+#------------------------------------------------------------------#
+
+# ADLリンカセクションとリソースリンカーセクションの順序は
+# そのままmakefileに反映される
+# ADLオブジェクトのリンク方法の指定
+%AdlldBegin
+
+## ADLリンカコマンドの指定
+AdlldCommand =
+#AdlldCommand = 	adlld -o wtii_adl &AdlcTarget ; \
+		funcequ -o wtii_eva.seq @AdlLinked ; \
+		copy $(Home)\wtii_adl $(Home)\WTIIADL0.ZAD ; \
+		adlstrip $(Home)\WTIIADL0.ZAD ; \
+		echo "ADLリンク終了"
+AdlldDepend = &AdlcTarget
+## リンク結果のファイル名
+AdlldTarget = wtii_adl
+
+%AdlldEnd
+
+#------------------------------------------------------------------#
+
+# Ｃソースのコンパイル方法の指定
+%CcBegin
+
+## Cコンパイラコマンドの指定
+CcCommand = \
+	bs2s $(CC) -c -o @CSource[%.c=%.obj]  \
+		@SECTION="COPTIONS"::ENTRY="DGFLAGS" \
+		@SECTION="COPTIONS"::ENTRY="DEFS" \
+		$(CINCFLAGS) \
+		@SECTION="COPTIONS"::ENTRY="COPTFLAGS" \
+		@SECTION="COPTIONS"::ENTRY="CFLAGS" \
+		@CSource
+
+## 依存関係の指定 
+CcDepend =  @CSource @HeaderFile $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+## Cオブジェクトファイル名の指定
+CcTarget = @CSource[%.c=%.obj]
+
+%CcEnd
+
+#------------------------------------------------------------------#
+
+# equファイル作成方法の指定
+%EquBegin
+
+## equファイルの名前の指定
+EquTarget = $(CSource)\wtii_res.seq
+## equファイル作成用コマンドの指定
+EquCommand = 	del @EquFile; \
+		h2equ @HeaderFile -I$(CSource) -I$(CHeader)
+## 依存関係の指定 
+EquDepend = @HeaderFile
+
+%EquEnd
+
+#------------------------------------------------------------------#
+
+# リソースのアセンブル方法の指定
+%AssemblerBegin
+
+## リソースアセンブラコマンドの指定
+AssemblerCommand = \
+  bs2s $(AS) $(ASFLAGS) -o @AssemblerSource[%.s=%.obj] $(ASMSW) $(ASMINC) @AssemblerSource
+## 依存関係の指定 
+AssemblerDepend =  @AssemblerSource  @HeaderFile
+## アセンブル結果（オブジェクトファイル）の名前 の指定
+AssemblerTarget = @AssemblerSource[%.s=%.obj]
+
+%AssemblerEnd
+
+#------------------------------------------------------------------#
+
+# ADLリンカセクションとリソースリンカーセクションの順序は
+# そのままmakefileに反映される
+# リソースオブジェクトのリンク方法の指定
+%LinkerBegin
+## リソースリンカコマンドの指定
+LinkerCommand = bs2s $(LK) \
+		@SECTION="LOPTIONS"::ENTRY="LKFLAGS" $(LKFLAGS) \
+		&AssemblerTarget $(LIBS) \
+		@SECTION="LOPTIONS"::ENTRY="LKFLAGS2"  $(LKFLAGS2) ; \
+		$(MULTIDIR)\grom -base .sddummy -section sysglob -section .data wtii; \
+		$(MULTIDIR)\gnm -s wtii > wtii.nm ;\
+		$(MULTIDIR)\mtrans -edg -a -nm=gnm -o wtii.sym wtii.nm ;\
+		minfo wtii.map ;\
+		dli wtii.load wtii.dli ;\
+		$(MULTIDIR)\gsrec -L -noS5 -o wtii.sr wtii ;\
+		s2file -f wtii.sr wtii.load ;\
+		load2f wtii.load ;\
+		zarc -fwtii.lst wtii.ZAC ;\
+		echo "Time Stamp File is created!!" > wtii.tim ;\
+		echo "Building is finished !!"
+## 依存関係の指定 
+LinkerDepend = @EquFile &AssemblerTarget &CcTarget
+## リンク結果のファイル名
+LinkerTarget = wtii
+
+%LinkerEnd
+
+#------------------------------------------------------------------#
+
+# ADLデバッガの起動方法の指定
+%AdlDebugBegin
+
+## ADLデバッガコマンドの指定
+AdlDebugCommand =  c:\green\multi wtii
+
+
+%AdlDebugEnd
+
+#------------------------------------------------------------------#
+

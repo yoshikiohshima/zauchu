@@ -1,0 +1,227 @@
+#***************************************
+#   SZAB ....
+#
+#   ADL Makefile
+#           Project: C:\ohshima\szab\zau-chu\2000.3\project\wtii.prj
+#           Build: wtii.bld
+#***************************************
+
+Program=C:\szab\bin
+Help=C:\szab\help
+Control=C:\szab\control
+Template=C:\szab\startapl
+CHeader=C:\szab\libheader\c
+ADLHeader=C:\szab\libheader\adl
+ADLControl=C:\szab\adlcontrol
+Model=C:\szab\Template
+BuiltinView=C:\szab\builtin\view
+BuiltinImage=C:\szab\builtin\image
+ApplicationType=CType0
+ApplicationID=WTII
+DisplaySize=VGA
+Home=C:\ohshima\szab\zau-chu\2000.3
+ADLSource=C:\ohshima\szab\zau-chu\2000.3\adlsrc
+ASMSource=C:\ohshima\szab\zau-chu\2000.3\asmsrc
+Build=C:\ohshima\szab\zau-chu\2000.3\build
+CSource=C:\ohshima\szab\zau-chu\2000.3\csrc
+Form=C:\ohshima\szab\zau-chu\2000.3\form
+Image=C:\ohshima\szab\zau-chu\2000.3\image
+Menu=C:\ohshima\szab\zau-chu\2000.3\menu
+Part=C:\ohshima\szab\zau-chu\2000.3\part
+Project=C:\ohshima\szab\zau-chu\2000.3\project
+String=C:\ohshima\szab\zau-chu\2000.3\string\WTIIDM00
+View=C:\ohshima\szab\zau-chu\2000.3\view
+### (1)ユーザ定義マクロセクションより
+
+
+#SZABをインストールしたディレクトリを書いてください
+#ZABDIR = c:\zab
+
+#multiをインストールしたディレクトリを書いてください
+MULTIDIR = c:\green
+
+#LIBDIR = $(ZABDIR)\lib
+LIBDIR = $(Program)\..\lib
+
+LIBINC = $(CHeader)
+ANSIINC = $(MULTIDIR)\ansi
+
+#　インクルードパス
+CINCFLAGS = -I$(CSource)\ -I$(ANSIINC)\ -I$(LIBINC)\
+
+#DEFS =
+#DGFLAGS = -G
+
+#　オプティマイズオプション
+#　-O　：ノーマルな最適化
+#COPTFLAGS = -O
+
+#　Ｃコンパイラオプション
+#　-ansi		：ゆるやかなANSI準拠
+#　-Xnooldfashioned	：=-などの古い形式を認めない
+#　-X236		：文字列などを.textセクションに配置
+#　-X700		：.bssセクションのリネームを許可
+#　-noasmwarn		：asm文に対する警告抑制
+#　-cpu=sh_iii		：SH3のコード生成
+#　-littleendian	：リトルエンディアン
+#CFLAGS = 	$(DGFLAGS) $(DEFS) $(CINCFLAGS) $(COPTFLAGS) \
+#		-ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn \
+#		-cpu=sh_iii -littleendian -Xnosysreg
+
+#アセンブラオプション
+ASFLAGS = $(ADFLAGS) -b0 -sh_iii -cm -cd -sjin -sjout
+
+ASMINC	= -I"$(CHeader)\|$(Home)\|$(CSource)\|$(ASMSource)\ "
+
+#プロセスが使用するグローバル変数
+LIBS = $(LIBDIR)\sysglob.obj
+
+#　リンカオプション
+#LKFLAGS = -L$(LIBDIR) -Y UL,$(LIBDIR) -map=wtii.map \
+#		@wtii.lnk @$(CSource)\linkfile.lst
+LKFLAGS =  -map=wtii.map \
+		@wtii.lnk @$(CSource)\linkfile.lst
+
+#リンカライブラリオプション
+#LKFLAGS2 = -letc -lzaurus -lansi -o wtii
+LKFLAGS2 = -o wtii
+
+#　h2equオプション
+H2EQUFLAGS = $(DEFS) $(CINCFLAGS)
+
+CC = $(MULTIDIR)\ccsh
+AS = $(MULTIDIR)\assh
+LK = $(MULTIDIR)\lx
+LB = $(MULTIDIR)\ax
+
+
+# 文字列ビューファイルがeucなどの場合に必要. 
+# ASMSW = -sjout
+
+
+### ADLのオプション定義
+ADLINC = 	-I$(Home) \
+		-I$(ADLSource) \
+		-I$(ADLControl) \
+		-I$(ADLHeader) \
+		-I$(CSource) 
+.IGNORE:
+
+default: \
+	wtii 
+
+### (2)リソースリンカセクションより
+wtii :: $(CSource)\wtii_res.seq $(ASMSource)\ctl_wtii.obj $(ASMSource)\frm_wtii.obj $(ASMSource)\icn_wtii.obj $(ASMSource)\str_wtii.obj C:\ohshima\szab\zau-chu\2000.3\asmsrc\aplhead.obj C:\ohshima\szab\zau-chu\2000.3\asmsrc\prochead.obj $(CSource)\wtii_evc.obj C:\ohshima\szab\zau-chu\2000.3\csrc\F0List.obj C:\ohshima\szab\zau-chu\2000.3\csrc\interp.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqADPCMPrims.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqFilePrims.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqMiscPrims.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqOldSoundPrims.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqShapeFill.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqSoundPrims.obj C:\ohshima\szab\zau-chu\2000.3\csrc\Squeak.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqVirtualMachine.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusCamera.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusDirectory.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusExternalPrims.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusMisc.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusNetwork.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusOldCamera.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSerialAndMIDIPort.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSoundAndJoystick.obj C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusWindow.obj C:\ohshima\szab\zau-chu\2000.3\csrc\wtiimain.obj
+	bs2s $(LK) -L$(LIBDIR) -Y UL,$(LIBDIR) -L$(CSource) $(LKFLAGS) $(ASMSource)\ctl_wtii.obj $(ASMSource)\frm_wtii.obj $(ASMSource)\icn_wtii.obj $(ASMSource)\str_wtii.obj C:\ohshima\szab\zau-chu\2000.3\asmsrc\aplhead.obj C:\ohshima\szab\zau-chu\2000.3\asmsrc\prochead.obj $(LIBS) -lzeuc -lppp -lofs -letc -lzaurus -lansi $(LKFLAGS2)
+	$(MULTIDIR)\grom -base .sddummy -section sysglob -section .data wtii
+	$(MULTIDIR)\gnm -s wtii > wtii.nm
+	$(MULTIDIR)\mtrans -edg -a -nm=gnm -o wtii.sym wtii.nm
+	minfo wtii.map
+	dli wtii.load wtii.dli
+	$(MULTIDIR)\gsrec -L -noS5 -o wtii.sr wtii
+	s2file -f wtii.sr wtii.load
+	load2f wtii.load
+	zarc -fwtii.lst wtii.ZAC
+	echo "Time Stamp File is created!!" > wtii.tim
+	echo "Building is finished !!"
+
+### (3)ADLリンカセクションより
+### ※Adlprotoセクション
+$(Home)\global_adl.prt :: $(ADLSource)\wtii_eva.adl
+	adlproto -global=global_adl -DADL $(ADLINC) -option=$(ADLSource)\adlfile.lst
+
+### (4)ADLコンパイラセクションより
+$(ADLSource)\wtii_eva.z :: $(ADLSource)\wtii_eva.adl $(CSource)\wtii_res.h
+	adlproto -global=global_adl $(ADLINC) $(ADLSource)\wtii_eva.adl
+	adlc -c -DADL =atosys $(ADLINC) $(ADLSource)\wtii_eva.adl
+	
+
+### (5)Cコンパイラセクションより
+$(CSource)\wtii_evc.obj :: $(CSource)\wtii_evc.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o $(CSource)\wtii_evc.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL $(CSource)\wtii_evc.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\F0List.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\F0List.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\F0List.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\F0List.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\interp.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\interp.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\interp.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\interp.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqADPCMPrims.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqADPCMPrims.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqADPCMPrims.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqADPCMPrims.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqFilePrims.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqFilePrims.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqFilePrims.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqFilePrims.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqMiscPrims.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqMiscPrims.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqMiscPrims.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqMiscPrims.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqOldSoundPrims.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqOldSoundPrims.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqOldSoundPrims.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqOldSoundPrims.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqShapeFill.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqShapeFill.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqShapeFill.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqShapeFill.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqSoundPrims.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqSoundPrims.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqSoundPrims.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqSoundPrims.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\Squeak.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\Squeak.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\Squeak.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\Squeak.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqVirtualMachine.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqVirtualMachine.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqVirtualMachine.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqVirtualMachine.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusCamera.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusCamera.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusCamera.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusCamera.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusDirectory.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusDirectory.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusDirectory.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusDirectory.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusExternalPrims.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusExternalPrims.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusExternalPrims.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusExternalPrims.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusMisc.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusMisc.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusMisc.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusMisc.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusNetwork.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusNetwork.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusNetwork.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusNetwork.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusOldCamera.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusOldCamera.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusOldCamera.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusOldCamera.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSerialAndMIDIPort.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSerialAndMIDIPort.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSerialAndMIDIPort.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSerialAndMIDIPort.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSoundAndJoystick.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSoundAndJoystick.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSoundAndJoystick.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusSoundAndJoystick.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusWindow.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusWindow.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusWindow.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\sqZaurusWindow.c
+
+C:\ohshima\szab\zau-chu\2000.3\csrc\wtiimain.obj :: C:\ohshima\szab\zau-chu\2000.3\csrc\wtiimain.c $(CSource)\wtii_res.h $(CSource)\wtii.h $(CSource)\wtii_C_usr.h
+	bs2s $(CC) -c -o C:\ohshima\szab\zau-chu\2000.3\csrc\wtiimain.obj  -DVGA_140DPI_APL $(CINCFLAGS) -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL C:\ohshima\szab\zau-chu\2000.3\csrc\wtiimain.c
+
+### (6)equファイルセクションより
+$(CSource)\wtii_res.seq :: $(CSource)\wtii_res.h
+	del $(CSource)\wtii_res.seq
+	h2equ $(CSource)\wtii_res.h -I$(CSource) -I$(CHeader)
+
+### (7)リソースアセンブラセクションより
+$(ASMSource)\ctl_wtii.obj :: $(ASMSource)\ctl_wtii.s $(CSource)\wtii_res.h
+	bs2s $(AS) $(ASFLAGS) -o $(ASMSource)\ctl_wtii.obj $(ASMSW) $(ASMINC) $(ASMSource)\ctl_wtii.s
+
+$(ASMSource)\frm_wtii.obj :: $(ASMSource)\frm_wtii.s $(CSource)\wtii_res.h
+	bs2s $(AS) $(ASFLAGS) -o $(ASMSource)\frm_wtii.obj $(ASMSW) $(ASMINC) $(ASMSource)\frm_wtii.s
+
+$(ASMSource)\icn_wtii.obj :: $(ASMSource)\icn_wtii.s $(CSource)\wtii_res.h
+	bs2s $(AS) $(ASFLAGS) -o $(ASMSource)\icn_wtii.obj $(ASMSW) $(ASMINC) $(ASMSource)\icn_wtii.s
+
+$(ASMSource)\str_wtii.obj :: $(ASMSource)\str_wtii.s $(CSource)\wtii_res.h
+	bs2s $(AS) $(ASFLAGS) -o $(ASMSource)\str_wtii.obj $(ASMSW) $(ASMINC) $(ASMSource)\str_wtii.s
+
+C:\ohshima\szab\zau-chu\2000.3\asmsrc\aplhead.obj :: C:\ohshima\szab\zau-chu\2000.3\asmsrc\aplhead.s $(CSource)\wtii_res.h
+	bs2s $(AS) $(ASFLAGS) -o C:\ohshima\szab\zau-chu\2000.3\asmsrc\aplhead.obj $(ASMSW) $(ASMINC) C:\ohshima\szab\zau-chu\2000.3\asmsrc\aplhead.s
+
+C:\ohshima\szab\zau-chu\2000.3\asmsrc\prochead.obj :: C:\ohshima\szab\zau-chu\2000.3\asmsrc\prochead.s $(CSource)\wtii_res.h
+	bs2s $(AS) $(ASFLAGS) -o C:\ohshima\szab\zau-chu\2000.3\asmsrc\prochead.obj $(ASMSW) $(ASMINC) C:\ohshima\szab\zau-chu\2000.3\asmsrc\prochead.s
+
+clean:

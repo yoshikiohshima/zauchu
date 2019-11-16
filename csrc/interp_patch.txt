@@ -1,0 +1,2 @@
+ccsh -S -o c:/ohshima/szab/zau-chu/2000.3/csrc/interp.s -Ic:/szab/libheader/c -I. -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL c:/ohshima/szab/zau-chu/2000.3/csrc/interp.c
+ccsh -c -o c:/ohshima/szab/zau-chu/2000.3/csrc/interp.obj -Ic:/szab/libheader/c -I. -O -OA -OL -ansi -Xnooldfashioned -X236 -X700 -X1152 -noasmwarn -cpu=sh_iii -littleendian -Xnosysreg -Xslashcomment -DZAURUS -DVGA_140DPI_APL c:/ohshima/szab/zau-chu/2000.3/csrc/interp.s

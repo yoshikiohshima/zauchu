@@ -1,0 +1,41 @@
+#resourcefile=WTIIST00
+#label=KeyState
+#comment=""
+#control=CHECKBUTTON
+#view=""
+#property={
+( BUTTON_NUM_PID 1 short )
+( TYPE_PID 0 char )
+( VALUE_PID CHECK_OFF short )
+( CHECKBTNSTR "" subview )
+( BUTTON_MODE_PID(1) ICON_BUTTON+NO_REVERSE_RETURN+FROM_START short )
+( CHECKBTNONICON SPECIFIED subview )
+#subview={
+#control=CHECKBUTTONONICON
+#view=$(BuiltinView)\kpaddisableicn.icn
+#property={
+( LEFT_X_PID 570 dummy )
+( TOP_Y_PID 0 dummy )
+( CHECK_ON_ICON_RES_ID_PID KpadDisableIcn id )
+( CHECK_ON_ICON_RES_NAME_PID COMNIC00 resfile )
+}
+}
+( CHECKBTNOFFICON SPECIFIED subview )
+#subview={
+#control=CHECKBUTTONOFFICON
+#view=$(BuiltinView)\kpadenableicn.icn
+#property={
+( LEFT_X_PID 570 qpshort )
+( TOP_Y_PID 0 qpshort )
+( WIDTH_PID 28 qpsizeshort )
+( HEIGHT_PID 16 qpsizeshort )
+( BUTTON_MODE_PID(1) ICON_BUTTON+NO_REVERSE_RETURN+FROM_START short )
+( BTN_FG_COLOR_PID(1) GC_BLACK guicolor )
+( BTN_BG_COLOR_PID(1) GC_BTN_BG guicolor )
+( CHECK_OFF_ICON_RES_ID_PID KpadEnableIcn id )
+( CHECK_OFF_ICON_RES_NAME_PID COMNIC00 resfile )
+( ICON_RES_ID_PID(1) KpadEnableIcn id )
+( ICON_RES_NAME_PID(1) COMNIC00 resfile )
+}
+}
+}

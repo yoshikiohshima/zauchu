@@ -1,0 +1,94 @@
+#***************************************
+#   SZAB ....
+#
+#   Resource Makefile
+#           Project: C:\ohshima\szab\zau-chu\2000.3\project\wtii.prj
+#           Build: wtii.bld
+#***************************************
+
+Program=C:\szab\bin
+Help=C:\szab\help
+Control=C:\szab\control
+Template=C:\szab\startapl
+CHeader=C:\szab\libheader\c
+ADLHeader=C:\szab\libheader\adl
+ADLControl=C:\szab\adlcontrol
+Model=C:\szab\Template
+BuiltinView=C:\szab\builtin\view
+BuiltinImage=C:\szab\builtin\image
+ApplicationType=CType0
+ApplicationID=WTII
+DisplaySize=VGA
+Home=C:\ohshima\szab\zau-chu\2000.3
+ADLSource=C:\ohshima\szab\zau-chu\2000.3\adlsrc
+ASMSource=C:\ohshima\szab\zau-chu\2000.3\asmsrc
+Build=C:\ohshima\szab\zau-chu\2000.3\build
+CSource=C:\ohshima\szab\zau-chu\2000.3\csrc
+Form=C:\ohshima\szab\zau-chu\2000.3\form
+Image=C:\ohshima\szab\zau-chu\2000.3\image
+Menu=C:\ohshima\szab\zau-chu\2000.3\menu
+Part=C:\ohshima\szab\zau-chu\2000.3\part
+Project=C:\ohshima\szab\zau-chu\2000.3\project
+String=C:\ohshima\szab\zau-chu\2000.3\string\WTIIDM00
+View=C:\ohshima\szab\zau-chu\2000.3\view
+default: \
+	$(ASMSource)\ctl_wtii.s \
+	$(ASMSource)\frm_wtii.s \
+	$(ASMSource)\icn_wtii.s \
+	$(ASMSource)\str_wtii.s 
+
+### (1)部品ファイル→リソースファイル変換
+$(ASMSource)\ctl_wtii.s :: C:\ohshima\szab\zau-chu\2000.3\WTII_res.tpl C:\ohshima\szab\zau-chu\2000.3\ctl_WTII.tpl \
+    C:\ohshima\szab\zau-chu\2000.3\part\BlueButton.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\CloseBtn.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\F0FileList.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\F0ListSqLogo.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\F1FileList.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\KEYPAD00.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\KeyState.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\MemorySize.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\SqueakSqLogo.ptr \
+    C:\ohshima\szab\zau-chu\2000.3\part\Status.ptr
+	part2res $(ASMSource)\ctl_wtii.s $(CSource)\wtii_res.h C:\ohshima\szab\zau-chu\2000.3\project\ctl_WTII.lst -e $(Project)\wtii.prf
+
+### (2)フォーム情報ファイル→リソースファイル変換
+$(ASMSource)\ctl_wtii.s :: C:\ohshima\szab\zau-chu\2000.3\WTII_res.tpl C:\ohshima\szab\zau-chu\2000.3\WTII_eva.tpl \
+    C:\ohshima\szab\zau-chu\2000.3\form\F0List.frm \
+    C:\ohshima\szab\zau-chu\2000.3\form\Squeak.frm
+	form2res $(ASMSource)\frm_wtii.s $(CSource)\wtii_evc.c $(ADLSource)\wtii_eva.adl $(CSource)\wtii_res.h C:\ohshima\szab\zau-chu\2000.3\project\frm_WTII.lst $(ADLSource)\wtii_adl.h -e $(Project)\wtii.prf
+
+### (3)文字列リソースソースファイル→リソースファイル変換
+$(ASMSource)\str_wtii.s :: C:\ohshima\szab\zau-chu\2000.3\WTII_res.tpl C:\ohshima\szab\zau-chu\2000.3\string\WTIIDM00\wtiistr.str
+	str2res $(ASMSource)\str_wtii.s $(CSource)\wtii_res.h C:\ohshima\szab\zau-chu\2000.3\string\WTIIDM00\wtiistr.str -e $(Project)\wtii.prf
+
+
+### (4)アイコンファイル→リソースファイル変換方法
+$(ASMSource)\icn_wtii.s :: C:\ohshima\szab\zau-chu\2000.3\WTII_res.tpl \
+    C:\ohshima\szab\zau-chu\2000.3\view\logo16.icn \
+    C:\ohshima\szab\zau-chu\2000.3\view\WTIIIC00\wtiiIcn.icn
+	view2res $(ASMSource)\icn_wtii.s $(Image) $(CSource)\wtii_res.h C:\ohshima\szab\zau-chu\2000.3\project\icn_WTII.lst -e $(Project)\wtii.prf
+
+### (5)イメージファイル→リソースファイル変換方法
+
+### (6)メニュー文字列ファイル→リソースファイル変換
+
+### (7)アトリビュートファイル→リソースファイル変換
+
+### 強制実行
+forcedly: part form string icon
+
+part::
+	part2res $(ASMSource)\ctl_wtii.s $(CSource)\wtii_res.h C:\ohshima\szab\zau-chu\2000.3\project\ctl_WTII.lst -e $(Project)\wtii.prf
+
+form::
+	form2res $(ASMSource)\frm_wtii.s $(CSource)\wtii_evc.c $(ADLSource)\wtii_eva.adl $(CSource)\wtii_res.h C:\ohshima\szab\zau-chu\2000.3\project\frm_WTII.lst $(ADLSource)\wtii_adl.h -e $(Project)\wtii.prf
+
+string::
+	str2res $(ASMSource)\str_wtii.s $(CSource)\wtii_res.h C:\ohshima\szab\zau-chu\2000.3\string\WTIIDM00\wtiistr.str -e $(Project)\wtii.prf
+
+icon::
+	view2res $(ASMSource)\icn_wtii.s $(Image) $(CSource)\wtii_res.h C:\ohshima\szab\zau-chu\2000.3\project\icn_WTII.lst -e $(Project)\wtii.prf
+
+clean:
+	touch -t 0101000070 $(ASMSource)\ctl_wtii.s $(ASMSource)\frm_wtii.s $(ASMSource)\icn_wtii.s $(ASMSource)\str_wtii.s
+

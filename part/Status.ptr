@@ -1,0 +1,20 @@
+#resourcefile=WTIIST00
+#label=Status
+#comment=""
+#control=DISPSTRING_STR
+#view=""
+#property={
+( DISP_ID_PID FDISP_CHAR_ID int )
+( VISIBLE_PID TRUE int )
+( LEFT_X_PID 200 qpshort )
+( TOP_Y_PID 0 qpshort )
+( WIDTH_PID 220 qpsizeshort )
+( HEIGHT_PID 16 qpsizeshort )
+( CDSP_MODE_PID FSET+QP40_CHR char )
+( CHAR_PITCH_PID 0 qpchar )
+( LINE_PITCH_PID 0 qpchar )
+( STR_LENGTH_PID 80 short )
+( STR_PID "\" \"" string )
+( FG_COLOR_PID BLACK color )
+( BG_COLOR_PID WHITE color )
+}

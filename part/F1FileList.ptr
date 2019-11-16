@@ -1,0 +1,14 @@
+#resourcefile=WTIIST00
+#label=F1FileList
+#comment=""
+#control=READFILELIST
+#view=""
+#property={
+( LEFT_X_PID 24 qpshort )
+( TOP_Y_PID 128 qpshort )
+( HEIGHT_PID 106 dummy )
+( WIDTH_PID 212 dummy )
+( FILE_NAME_PID *.ima string )
+( DRIVE_NAME_PID F1: string )
+( FILE_CALL_BACK_PID 0 func )
+}

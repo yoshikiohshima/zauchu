@@ -1,0 +1,18 @@
+#resourcefile=WTIIST00
+#label=MemorySize
+#comment=""
+#control=SLIDER
+#view=""
+#property={
+( LEFT_X_PID 280 qpshort )
+( TOP_Y_PID 200 qpshort )
+( WIDTH_PID 192 qpshort )
+( HEIGHT_PID 23 dummy )
+( SCALE_NUM_PID 2 short )
+( VALUE_PID 1 short )
+( TYPE_PID SLD_WITH_SCALE char )
+( STR_RES_NAME_PID WTIIST00 resfile )
+( STR_RES_ID_PID MemorySliderLabel id )
+( CDSP_MODE_PID FSET+QP96_CHR char )
+( STR_RES_CHANGE_PID "" dummy )
+}

@@ -1,0 +1,20 @@
+#resourcefile=WTIIST00
+#label=F0ListSqLogo
+#comment=""
+#control=CLICKBUTTON
+#view=logo16.icn
+#property={
+( CLICK_BTN_KEYCODE_PID 0 short )
+( BUTTON_NUM_PID 1 short )
+( TYPE_PID 0 char )
+( LEFT_X_PID 0 qpshort )
+( TOP_Y_PID 0 qpshort )
+( WIDTH_PID 16 qpsizeshort )
+( HEIGHT_PID 16 qpsizeshort )
+( BUTTON_ID_PID(1) 1 short )
+( ICON_RES_ID_PID(1) Logo16 id )
+( ICON_RES_NAME_PID(1) WTIIIC00 resfile )
+( BUTTON_MODE_PID(1) ICON_BUTTON short )
+( BUTTON_POS_X_PID(1) 0 qpshort )
+( BUTTON_POS_Y_PID(1) 0 qpshort )
+}

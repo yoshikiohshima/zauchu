@@ -1,0 +1,6 @@
+#RESFILENAME="TESTIMND"
+#LABEL="form"
+#COMMENT="フォームイメージ"
+#OPTION="0"
+#NORMAL={
+#FILE="form1.pbm"}

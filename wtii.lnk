@@ -1,0 +1,23 @@
+# C:\ohshima\zau-chu\ICRUISE\2000.1.lnk
+# アプリケーションプログラムセクションマップ
+-sec
+{
+# lxのアブソリュートセクションのバグ対応
+	dummytxt	0x00000000	:
+# 以下リソースコードセクション
+	mblock		align(0x10)		:
+	mblk_end	align(0x10)		:
+# 以下コードセクション
+	header		align(0x10)		:
+	.text		align(0x10)		:
+	library		align(0x10)		:
+	code		align(0x10)		:
+	.rodata		align(0x10)		:
+	.sddummy	align(0x10)		:
+	.shadow		align(0x10)		:
+	.romdata	align(0x10)		:
+# 全てのアプリで固定のアドレス
+	sysglob		0x40000c00	:
+	.data					:
+	.bss					:
+}
